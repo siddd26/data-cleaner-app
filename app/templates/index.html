@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="p-5 mb-4 bg-light rounded-3 border">
+    <div class="container-fluid py-3">
+        <h1 class="display-6 fw-bold">Starter Data Cleaner App</h1>
+        <p class="col-md-8 fs-5">
+            This starter app is ready for guest users, authentication, plan-based limits, and data cleaning features.
+        </p>
+        <p class="mb-1"><strong>Current mode:</strong> {{ current_app_user.plan|capitalize }} plan</p>
+        <p class="text-muted mb-0">
+            {% if current_app_user.is_authenticated %}
+                Logged in as {{ current_app_user.email }}
+            {% else %}
+                Browsing as guest user
+            {% endif %}
+        </p>
+    </div>
+</div>
+{% endblock %}
