@@ -12,100 +12,100 @@
 </section>
 
 <section class="content-grid">
-    <div class="upload-column">
-        <div class="saas-card upload-card">
-            <div class="section-header">
-                <div>
-                    <span class="section-eyebrow">Upload</span>
-                    <h2 class="section-title">Start with a file</h2>
-                </div>
-                <p class="section-text">CSV and XLSX supported. Free users can upload up to 5 MB and premium users up to 50 MB.</p>
+    <div class="saas-card upload-card">
+        <div class="section-header">
+            <div>
+                <span class="section-eyebrow">Upload</span>
+                <h2 class="section-title">Start with a file</h2>
             </div>
-
-            <form method="post" action="{{ url_for('main.upload_file') }}" enctype="multipart/form-data" class="upload-form">
-                <label class="upload-dropzone" for="data_file">
-                    <span class="upload-dropzone-icon">+</span>
-                    <span class="upload-dropzone-title">Drop in a file or click to browse</span>
-                    <span class="upload-dropzone-text">Only `.csv` and `.xlsx` files are accepted.</span>
-                    <input class="upload-input" id="data_file" name="data_file" type="file" accept=".csv,.xlsx" required>
-                </label>
-                <button class="btn btn-app btn-app-primary btn-app-lg" type="submit">Upload and clean</button>
-            </form>
-
-            {% if download_ready %}
-                <div class="download-panel">
-                    <div>
-                        <span class="section-eyebrow">Ready</span>
-                        <h3 class="download-title">{{ original_filename }}</h3>
-                        <p class="download-text">Your cleaned file is ready to download in the original format.</p>
-                    </div>
-                    <a class="btn btn-app btn-app-secondary" href="{{ url_for('main.download_file') }}">Download file</a>
-                </div>
-            {% endif %}
+            <p class="section-text">CSV and XLSX supported. Free users can upload up to 5 MB and premium users up to 50 MB.</p>
         </div>
+
+        <form method="post" action="{{ url_for('main.upload_file') }}" enctype="multipart/form-data" class="upload-form" data-async="true">
+            <label class="upload-dropzone" for="data_file" data-dropzone>
+                <span class="upload-dropzone-icon" data-dropzone-icon>+</span>
+                <span class="upload-dropzone-title" data-dropzone-title>Drop in a file or click to browse</span>
+                <span class="upload-dropzone-text" data-dropzone-hint>Only `.csv` and `.xlsx` files are accepted.</span>
+                <span class="upload-dropzone-file" data-dropzone-file>No file selected yet.</span>
+                <input class="upload-input" id="data_file" name="data_file" type="file" accept=".csv,.xlsx" required>
+            </label>
+            <button class="btn btn-app btn-app-primary btn-app-lg upload-submit-button" type="submit" data-submit-button>
+                <span class="button-spinner" aria-hidden="true"></span>
+                <span data-submit-label>Upload and clean</span>
+            </button>
+        </form>
+
+        {% if download_ready %}
+            <div class="download-panel">
+                <div class="download-copy">
+                    <span class="download-label">Ready</span>
+                    <h3 class="download-title">{{ original_filename }}</h3>
+                    <p class="download-text">Your cleaned file is ready to download in the original format.</p>
+                </div>
+                <a class="btn btn-app btn-app-secondary download-button" href="{{ url_for('main.download_file') }}">Download file</a>
+            </div>
+        {% endif %}
     </div>
 
-    <div class="preview-column">
-        <div class="saas-card preview-card">
-            <div class="section-header section-header-row">
-                <div>
-                    <span class="section-eyebrow">Preview</span>
-                    <h2 class="section-title">Cleaned dataset</h2>
-                </div>
-                <p class="section-text">The first 10 cleaned rows are shown below.</p>
+    <div class="saas-card preview-card">
+        <div class="section-header section-header-row">
+            <div>
+                <span class="section-eyebrow">Preview</span>
+                <h2 class="section-title">Cleaned dataset</h2>
             </div>
+            <p class="section-text">The first 10 cleaned rows are shown below.</p>
+        </div>
 
-            {% if preview_data and preview_data.columns %}
-                {% if cleaning_summary %}
-                    <div class="stats-grid">
-                        <div class="metric-card">
-                            <span class="metric-label">Original rows</span>
-                            <span class="metric-value">{{ cleaning_summary.original_rows }}</span>
-                        </div>
-                        <div class="metric-card">
-                            <span class="metric-label">Cleaned rows</span>
-                            <span class="metric-value">{{ cleaning_summary.cleaned_rows }}</span>
-                        </div>
-                        <div class="metric-card">
-                            <span class="metric-label">Removed rows</span>
-                            <span class="metric-value">{{ cleaning_summary.removed_rows }}</span>
-                        </div>
-                        <div class="metric-card">
-                            <span class="metric-label">Columns</span>
-                            <span class="metric-value">{{ cleaning_summary.column_count }}</span>
-                        </div>
+        {% if preview_data and preview_data.columns %}
+            {% if cleaning_summary %}
+                <div class="stats-grid">
+                    <div class="metric-card">
+                        <span class="metric-label">Original rows</span>
+                        <span class="metric-value">{{ cleaning_summary.original_rows }}</span>
                     </div>
-                {% endif %}
+                    <div class="metric-card">
+                        <span class="metric-label">Cleaned rows</span>
+                        <span class="metric-value">{{ cleaning_summary.cleaned_rows }}</span>
+                    </div>
+                    <div class="metric-card">
+                        <span class="metric-label">Removed rows</span>
+                        <span class="metric-value">{{ cleaning_summary.removed_rows }}</span>
+                    </div>
+                    <div class="metric-card">
+                        <span class="metric-label">Columns</span>
+                        <span class="metric-value">{{ cleaning_summary.column_count }}</span>
+                    </div>
+                </div>
+            {% endif %}
 
-                <div class="preview-table-shell">
-                    <div class="table-responsive preview-table-wrap">
-                        <table class="table preview-table align-middle mb-0">
-                            <thead>
+            <div class="preview-table-shell">
+                <div class="table-responsive preview-table-wrap">
+                    <table class="table preview-table align-middle mb-0">
+                        <thead>
+                            <tr>
+                                {% for column in preview_data.columns %}
+                                    <th>{{ column }}</th>
+                                {% endfor %}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for row in preview_data.rows %}
                                 <tr>
-                                    {% for column in preview_data.columns %}
-                                        <th>{{ column }}</th>
+                                    {% for value in row %}
+                                        <td>{{ value }}</td>
                                     {% endfor %}
                                 </tr>
-                            </thead>
-                            <tbody>
-                                {% for row in preview_data.rows %}
-                                    <tr>
-                                        {% for value in row %}
-                                            <td>{{ value }}</td>
-                                        {% endfor %}
-                                    </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
+                            {% endfor %}
+                        </tbody>
+                    </table>
                 </div>
-                {% else %}
-                    <div class="preview-empty-state">
-                        <h3 class="preview-empty-title">No preview yet</h3>
-                        <p class="preview-empty-text">Upload a file to see a clean table preview and cleaning summary here.</p>
-                    </div>
-                {% endif %}
-        </div>
+            </div>
+        {% else %}
+            <div class="preview-empty-state">
+                <h3 class="preview-empty-title">No preview yet</h3>
+                <p class="preview-empty-text">Upload a file to see a clean table preview and cleaning summary here.</p>
+            </div>
+        {% endif %}
     </div>
 </section>
 
