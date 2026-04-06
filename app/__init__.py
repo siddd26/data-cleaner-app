@@ -16,6 +16,9 @@ def create_app(config_class=Config):
     os.makedirs(app.config["INSTANCE_DIR"], exist_ok=True)
     os.makedirs(app.config["TEMP_UPLOAD_FOLDER"], exist_ok=True)
 
+    if not app.config.get("SECRET_KEY"):
+        raise RuntimeError("SECRET_KEY must be set in production.")
+
     db.init_app(app)
     login_manager.init_app(app)
 

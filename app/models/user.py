@@ -31,4 +31,4 @@ def load_user(user_id):
     if not user_id:
         return None
 
-    return User.query.get(int(user_id))
+    return db.session.get(User, int(user_id))

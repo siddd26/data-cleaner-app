@@ -1,13 +1,17 @@
 # Data Cleaner App
 
-Starter Flask project for uploading, cleaning, previewing, and downloading CSV and Excel files.
+Production-ready Flask application for uploading, cleaning, previewing, and downloading CSV and Excel files.
+
+## Overview
+
+Data Cleaner provides a clean SaaS-style interface for uploading spreadsheets, applying basic cleaning steps, previewing results, and downloading the cleaned file in its original format.
 
 ## Features
 
 - Modular Flask app package with `create_app()`
 - SQLite database with `Flask-SQLAlchemy`
 - Email/password authentication with hashed passwords
-- Guest user support through `get_current_user()`
+- Guest user support for free plan access
 - Free and premium plans with file-size gating
 - CSV and XLSX upload support
 - Basic pandas cleaning:
@@ -19,10 +23,19 @@ Starter Flask project for uploading, cleaning, previewing, and downloading CSV a
 - Cleaned file download in the original file format
 - Friendly error messages for invalid uploads and processing failures
 
+## Tech Stack
+
+- Python 3.9+
+- Flask 3.x
+- Flask-Login
+- Flask-SQLAlchemy
+- pandas + openpyxl
+- SQLite
+
 ## Project Structure
 
 - `run.py`: application entry point
-- `config.py`: app configuration and plan limits
+- `config.py`: configuration and plan limits
 - `app/__init__.py`: app factory and blueprint registration
 - `app/extensions.py`: database and login manager setup
 - `app/models/user.py`: user model
@@ -32,7 +45,15 @@ Starter Flask project for uploading, cleaning, previewing, and downloading CSV a
 - `app/utils/file_handlers.py`: file validation, storage, loading, saving, and cleanup helpers
 - `app/utils/user_utils.py`: guest-user and auth validation helpers
 
-## Setup
+## Environment Variables
+
+- `SECRET_KEY` (required in production): session and cookie signing key
+- `FLASK_ENV`: `development` or `production` (defaults to `development`)
+- `FLASK_DEBUG`: `true` or `false` (defaults to `false`)
+- `SESSION_COOKIE_SECURE`: `true` to force secure cookies (defaults to `false`)
+- `SESSION_COOKIE_SAMESITE`: `Lax` or `Strict` (defaults to `Lax`)
+
+## Setup (Local)
 
 1. Create a virtual environment:
    `python -m venv venv`
@@ -43,23 +64,24 @@ Starter Flask project for uploading, cleaning, previewing, and downloading CSV a
 4. Run the app:
    `python run.py`
 5. Open:
-   `http://127.0.0.1:5000`
+   `http://127.0.0.1:5050`
 
-## Default Rules
+## Tests
 
-- Free plan upload limit: 5 MB
-- Premium plan upload limit: 50 MB
-- Temporary files are stored in `instance/temp_uploads`
-- Old temporary files are cleaned automatically
+1. Install dev dependencies:
+   `pip install -r requirements-dev.txt`
+2. Run tests:
+   `pytest -q`
 
-## Starter Test Checklist
+## Deployment Notes
 
-- Register a new user
-- Log in with the created account
-- Upload a valid `.csv` file
-- Upload a valid `.xlsx` file
-- Verify preview shows the first 10 cleaned rows
-- Download the cleaned file
-- Try an invalid file type like `.txt`
-- Try an empty file upload
-- Try a file larger than the plan limit
+- Use a production WSGI server such as Gunicorn (Linux/macOS) or Waitress (Windows).
+- Set `SECRET_KEY` and `SESSION_COOKIE_SECURE=true` for production.
+- Point the app at a production database if scaling beyond SQLite.
+
+## Assumptions and Limitations
+
+- SQLite is used by default for simplicity.
+- Cleaning is intentionally minimal and designed for beginners.
+- Temporary uploads are stored in `instance/temp_uploads` and cleaned automatically.
+- File size limits are plan-based: free (5 MB), premium (50 MB).
