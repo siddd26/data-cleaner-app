@@ -1,86 +1,102 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="p-5 mb-4 bg-light rounded-3 border">
-    <div class="container-fluid py-3">
-        <h1 class="display-6 fw-bold">Starter Data Cleaner App</h1>
-        <p class="col-md-8 fs-5">
-            This starter app is ready for guest users, authentication, plan-based limits, and data cleaning features.
+<section class="hero-section">
+    <div class="hero-copy">
+        <span class="section-eyebrow">Clean data, faster</span>
+        <h1 class="hero-title">A simple SaaS-style workspace for cleaning CSV and Excel files.</h1>
+        <p class="hero-text">
+            Upload a spreadsheet, remove duplicates, fix missing values, preview the result, and download a cleaner file in the same format.
         </p>
-        <p class="mb-1"><strong>Current mode:</strong> {{ current_app_user.plan|capitalize }} plan</p>
-        <p class="text-muted mb-0">
-            {% if current_app_user.is_authenticated %}
-                Logged in as {{ current_app_user.email }}
-            {% else %}
-                Browsing as guest user
-            {% endif %}
-        </p>
-    </div>
-</div>
-
-<div class="row g-4">
-    <div class="col-lg-5">
-        <div class="card shadow-sm h-100">
-            <div class="card-body">
-                <h2 class="h4 mb-3">Upload a File</h2>
-                <p class="text-muted">
-                    Supported formats: CSV and XLSX. Free users can upload up to 5 MB. Premium users can upload up to 50 MB.
-                </p>
-                <form method="post" action="{{ url_for('main.upload_file') }}" enctype="multipart/form-data">
-                    <div class="mb-3">
-                        <label class="form-label" for="data_file">Choose file</label>
-                        <input class="form-control" id="data_file" name="data_file" type="file" accept=".csv,.xlsx" required>
-                    </div>
-                    <button class="btn btn-primary" type="submit">Upload and Clean</button>
-                </form>
-
-                {% if download_ready %}
-                    <hr>
-                    <p class="mb-2"><strong>Ready:</strong> {{ original_filename }}</p>
-                    <a class="btn btn-success" href="{{ url_for('main.download_file') }}">Download Cleaned File</a>
-                {% endif %}
+        <div class="hero-meta">
+            <div class="hero-meta-item">
+                <span class="hero-meta-label">Current plan</span>
+                <span class="hero-meta-value">{{ current_app_user.plan|capitalize }}</span>
+            </div>
+            <div class="hero-meta-item">
+                <span class="hero-meta-label">Status</span>
+                <span class="hero-meta-value">
+                    {% if current_app_user.is_authenticated %}
+                        {{ current_app_user.email }}
+                    {% else %}
+                        Browsing as guest
+                    {% endif %}
+                </span>
             </div>
         </div>
     </div>
+</section>
 
-    <div class="col-lg-7">
-        <div class="card shadow-sm h-100">
-            <div class="card-body">
-                <h2 class="h4 mb-3">Preview</h2>
+<section class="content-grid">
+    <div class="upload-column">
+        <div class="saas-card upload-card">
+            <div class="section-header">
+                <div>
+                    <span class="section-eyebrow">Upload</span>
+                    <h2 class="section-title">Start with a file</h2>
+                </div>
+                <p class="section-text">CSV and XLSX supported. Free users can upload up to 5 MB and premium users up to 50 MB.</p>
+            </div>
 
-                {% if preview_data and preview_data.columns %}
-                    {% if cleaning_summary %}
-                        <div class="row g-3 mb-3">
-                            <div class="col-sm-3">
-                                <div class="border rounded p-3 bg-light">
-                                    <div class="small text-muted">Original Rows</div>
-                                    <div class="h5 mb-0">{{ cleaning_summary.original_rows }}</div>
-                                </div>
-                            </div>
-                            <div class="col-sm-3">
-                                <div class="border rounded p-3 bg-light">
-                                    <div class="small text-muted">Cleaned Rows</div>
-                                    <div class="h5 mb-0">{{ cleaning_summary.cleaned_rows }}</div>
-                                </div>
-                            </div>
-                            <div class="col-sm-3">
-                                <div class="border rounded p-3 bg-light">
-                                    <div class="small text-muted">Removed Rows</div>
-                                    <div class="h5 mb-0">{{ cleaning_summary.removed_rows }}</div>
-                                </div>
-                            </div>
-                            <div class="col-sm-3">
-                                <div class="border rounded p-3 bg-light">
-                                    <div class="small text-muted">Columns</div>
-                                    <div class="h5 mb-0">{{ cleaning_summary.column_count }}</div>
-                                </div>
-                            </div>
+            <form method="post" action="{{ url_for('main.upload_file') }}" enctype="multipart/form-data" class="upload-form">
+                <label class="upload-dropzone" for="data_file">
+                    <span class="upload-dropzone-icon">+</span>
+                    <span class="upload-dropzone-title">Drop in a file or click to browse</span>
+                    <span class="upload-dropzone-text">Only `.csv` and `.xlsx` files are accepted.</span>
+                    <input class="upload-input" id="data_file" name="data_file" type="file" accept=".csv,.xlsx" required>
+                </label>
+                <button class="btn btn-app btn-app-primary btn-app-lg" type="submit">Upload and clean</button>
+            </form>
+
+            {% if download_ready %}
+                <div class="download-panel">
+                    <div>
+                        <span class="section-eyebrow">Ready</span>
+                        <h3 class="download-title">{{ original_filename }}</h3>
+                        <p class="download-text">Your cleaned file is ready to download in the original format.</p>
+                    </div>
+                    <a class="btn btn-app btn-app-secondary" href="{{ url_for('main.download_file') }}">Download file</a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="preview-column">
+        <div class="saas-card preview-card">
+            <div class="section-header section-header-row">
+                <div>
+                    <span class="section-eyebrow">Preview</span>
+                    <h2 class="section-title">Cleaned dataset</h2>
+                </div>
+                <p class="section-text">The first 10 cleaned rows are shown below.</p>
+            </div>
+
+            {% if preview_data and preview_data.columns %}
+                {% if cleaning_summary %}
+                    <div class="stats-grid">
+                        <div class="metric-card">
+                            <span class="metric-label">Original rows</span>
+                            <span class="metric-value">{{ cleaning_summary.original_rows }}</span>
                         </div>
-                    {% endif %}
+                        <div class="metric-card">
+                            <span class="metric-label">Cleaned rows</span>
+                            <span class="metric-value">{{ cleaning_summary.cleaned_rows }}</span>
+                        </div>
+                        <div class="metric-card">
+                            <span class="metric-label">Removed rows</span>
+                            <span class="metric-value">{{ cleaning_summary.removed_rows }}</span>
+                        </div>
+                        <div class="metric-card">
+                            <span class="metric-label">Columns</span>
+                            <span class="metric-value">{{ cleaning_summary.column_count }}</span>
+                        </div>
+                    </div>
+                {% endif %}
 
-                    <div class="table-responsive">
-                        <table class="table table-bordered table-striped align-middle">
-                            <thead class="table-light">
+                <div class="preview-table-shell">
+                    <div class="table-responsive preview-table-wrap">
+                        <table class="table preview-table align-middle mb-0">
+                            <thead>
                                 <tr>
                                     {% for column in preview_data.columns %}
                                         <th>{{ column }}</th>
@@ -98,12 +114,14 @@
                             </tbody>
                         </table>
                     </div>
-                    <p class="text-muted mb-0">Showing the first 10 rows of the cleaned dataset.</p>
+                </div>
                 {% else %}
-                    <p class="text-muted mb-0">Upload a file to preview the first 10 cleaned rows here.</p>
+                    <div class="preview-empty-state">
+                        <h3 class="preview-empty-title">No preview yet</h3>
+                        <p class="preview-empty-text">Upload a file to see a clean table preview and cleaning summary here.</p>
+                    </div>
                 {% endif %}
-            </div>
         </div>
     </div>
-</div>
+</section>
 {% endblock %}
