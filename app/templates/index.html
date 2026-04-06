@@ -8,22 +8,6 @@
         <p class="hero-text">
             Upload a spreadsheet, remove duplicates, fix missing values, preview the result, and download a cleaner file in the same format.
         </p>
-        <div class="hero-meta">
-            <div class="hero-meta-item">
-                <span class="hero-meta-label">Current plan</span>
-                <span class="hero-meta-value">{{ current_app_user.plan|capitalize }}</span>
-            </div>
-            <div class="hero-meta-item">
-                <span class="hero-meta-label">Status</span>
-                <span class="hero-meta-value">
-                    {% if current_app_user.is_authenticated %}
-                        {{ current_app_user.email }}
-                    {% else %}
-                        Browsing as guest
-                    {% endif %}
-                </span>
-            </div>
-        </div>
     </div>
 </section>
 
@@ -121,6 +105,33 @@
                         <p class="preview-empty-text">Upload a file to see a clean table preview and cleaning summary here.</p>
                     </div>
                 {% endif %}
+        </div>
+    </div>
+</section>
+
+<section class="privacy-section">
+    <div class="saas-card privacy-card">
+        <div class="privacy-copy">
+            <span class="section-eyebrow">Privacy</span>
+            <h2 class="section-title">Your files stay temporary and purpose-limited.</h2>
+            <p class="section-text">
+                Uploaded files are used only for cleaning and preview, stored in temporary app storage, and cleaned up automatically.
+                This starter app is designed to avoid exposing raw system errors or unnecessary file retention.
+            </p>
+        </div>
+        <div class="privacy-points">
+            <div class="privacy-point">
+                <span class="privacy-point-title">Temporary storage</span>
+                <span class="privacy-point-text">Files are stored in a temp folder instead of being kept permanently by default.</span>
+            </div>
+            <div class="privacy-point">
+                <span class="privacy-point-title">User-friendly handling</span>
+                <span class="privacy-point-text">Validation and processing errors are shown clearly without exposing internal Python traces.</span>
+            </div>
+            <div class="privacy-point">
+                <span class="privacy-point-title">Simple by design</span>
+                <span class="privacy-point-text">The current app focuses on essential cleaning steps and keeps backend behavior easy to understand.</span>
+            </div>
         </div>
     </div>
 </section>
