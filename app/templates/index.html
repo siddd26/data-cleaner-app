@@ -17,4 +17,93 @@
         </p>
     </div>
 </div>
+
+<div class="row g-4">
+    <div class="col-lg-5">
+        <div class="card shadow-sm h-100">
+            <div class="card-body">
+                <h2 class="h4 mb-3">Upload a File</h2>
+                <p class="text-muted">
+                    Supported formats: CSV and XLSX. Free users can upload up to 5 MB. Premium users can upload up to 50 MB.
+                </p>
+                <form method="post" action="{{ url_for('main.upload_file') }}" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label class="form-label" for="data_file">Choose file</label>
+                        <input class="form-control" id="data_file" name="data_file" type="file" accept=".csv,.xlsx" required>
+                    </div>
+                    <button class="btn btn-primary" type="submit">Upload and Clean</button>
+                </form>
+
+                {% if download_ready %}
+                    <hr>
+                    <p class="mb-2"><strong>Ready:</strong> {{ original_filename }}</p>
+                    <a class="btn btn-success" href="{{ url_for('main.download_file') }}">Download Cleaned File</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-7">
+        <div class="card shadow-sm h-100">
+            <div class="card-body">
+                <h2 class="h4 mb-3">Preview</h2>
+
+                {% if preview_data and preview_data.columns %}
+                    {% if cleaning_summary %}
+                        <div class="row g-3 mb-3">
+                            <div class="col-sm-3">
+                                <div class="border rounded p-3 bg-light">
+                                    <div class="small text-muted">Original Rows</div>
+                                    <div class="h5 mb-0">{{ cleaning_summary.original_rows }}</div>
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="border rounded p-3 bg-light">
+                                    <div class="small text-muted">Cleaned Rows</div>
+                                    <div class="h5 mb-0">{{ cleaning_summary.cleaned_rows }}</div>
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="border rounded p-3 bg-light">
+                                    <div class="small text-muted">Removed Rows</div>
+                                    <div class="h5 mb-0">{{ cleaning_summary.removed_rows }}</div>
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="border rounded p-3 bg-light">
+                                    <div class="small text-muted">Columns</div>
+                                    <div class="h5 mb-0">{{ cleaning_summary.column_count }}</div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped align-middle">
+                            <thead class="table-light">
+                                <tr>
+                                    {% for column in preview_data.columns %}
+                                        <th>{{ column }}</th>
+                                    {% endfor %}
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for row in preview_data.rows %}
+                                    <tr>
+                                        {% for value in row %}
+                                            <td>{{ value }}</td>
+                                        {% endfor %}
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="text-muted mb-0">Showing the first 10 rows of the cleaned dataset.</p>
+                {% else %}
+                    <p class="text-muted mb-0">Upload a file to preview the first 10 cleaned rows here.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}

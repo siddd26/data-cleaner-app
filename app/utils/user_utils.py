@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+import re
 
 from flask import current_app
 from flask_login import current_user
@@ -30,3 +31,18 @@ def get_plan_file_size_limit(user):
         return current_app.config["PREMIUM_PLAN_SIZE_LIMIT"]
 
     return current_app.config["FREE_PLAN_SIZE_LIMIT"]
+
+
+# This function checks whether an email address uses a simple valid format.
+# Input: email string
+# Output: boolean indicating whether the email format is valid
+def is_valid_email(email):
+    email_pattern = r"^[^@\s]+@[^@\s]+\.[^@\s]+$"
+    return bool(re.match(email_pattern, email))
+
+
+# This function checks whether a password meets the minimum starter app rules.
+# Input: password string
+# Output: boolean indicating whether the password is valid
+def is_valid_password(password):
+    return len(password) >= 6
